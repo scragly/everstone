@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "everstone"
+version = "0.1.0"
+description = "Simple Database Query Generator"
+authors = ["scragly <29337040+scragly@users.noreply.github.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+asyncpg = "^0.22.0"
+sqlparse = "^0.4.1"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.9.0"
+flake8-annotations = "^2.6.1"
+flake8-bugbear = "^21.3.2"
+flake8-docstrings = "^1.6.0"
+flake8-string-format = "^0.3.0"
+flake8-tidy-imports = "^4.2.1"
+flake8-todo = "^0.7"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
