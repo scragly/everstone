@@ -19,7 +19,7 @@ class Schema(LimitInstances):
         self._exists = None
 
     def __repr__(self):
-        return f"<Schema '{self.name}'>"
+        return f"<Schema '{self.name}' on '{self.db.name}'>"
 
     def __str__(self):
         return self.name
