@@ -12,3 +12,6 @@ class LimitInstances:
         if instance is None:
             cls.__instances__[name] = instance = object.__new__(cls)
         return instance
+
+    def __init_subclass__(cls, **kwargs):
+        cls.__instances__ = dict()
