@@ -8,6 +8,7 @@ import asyncpg
 import sqlparse
 
 from .bases import LimitInstances
+from .exceptions import DBError
 from .sql import types
 from .sql.schema import Schema
 from .sql.table import Table
@@ -54,10 +55,11 @@ class Database(LimitInstances):
         return self.url or self.name
 
     def __repr__(self):
+        status = " disabled" if self._mock else ""
         if self.user:
-            return f"<Database name='{self.name}' user='{self.user}'>"
+            return f"<Database name='{self.name}' user='{self.user}'{status}>"
         else:
-            return f"<Database '{self.name}'>"
+            return f"<Database '{self.name}'{status}>"
 
     def __hash__(self):
         return hash(str(self))
@@ -71,6 +73,8 @@ class Database(LimitInstances):
         """Create the asyncpg connection pool for this database connection to use."""
         if self.pool:
             self.pool.close()
+        if not self.url:
+            raise DBError("No database available. Please define a connection with Database.connect.")
         self.pool = await asyncpg.create_pool(self.url, init=self._enable_json)
 
     @staticmethod
@@ -100,9 +104,11 @@ class Database(LimitInstances):
     async def execute(self, sql: str, *args, timeout: t.Optional[float] = None) -> str:
         """Execute an SQL statement."""
         if self._mock:
-            pretty_sql = sqlparse.parse(sql)
+            pretty_sql = sqlparse.format(sql)
             print(pretty_sql, *args)
-            return pretty_sql
+            return str(pretty_sql)
+        if not self.pool:
+            await self.create_pool()
         return await self.pool.execute(sql, *args, timeout=timeout)
 
     def Schema(self, name: str) -> Schema:
