@@ -27,16 +27,24 @@ class Column(comparisons.Comparable):
             sql += f" {self.constraint}"
         return sql
 
+    @property
+    def full_name(self) -> str:
+        """Return the fully qualified name for the column."""
+        if self.table:
+            return f"{self.table.name}.{self.name}"
+        else:
+            return self.name
+
     def bind_table(self, table: Table) -> Column:
         """Binds a table to this column."""
         self.table = table
         return self
 
-    def __str__(self) -> str:
-        if self.table:
-            return f"{self.table}.{self.name}"
-        else:
-            return self.name
+    def __str__(self):
+        return self.full_name
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__} {self.full_name} {self.type}>"
 
     @property
     def avg(self) -> aggregates.Avg:
