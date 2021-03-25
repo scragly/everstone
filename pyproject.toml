@@ -1,9 +1,22 @@
 [tool.poetry]
 name = "everstone"
-version = "0.1.0"
+version = "0.1.1"
 description = "Simple Database Query Generator"
 authors = ["scragly <29337040+scragly@users.noreply.github.com>"]
 license = "MIT"
+readme = "README.md"
+repository = "https://github.com/scragly/everstone"
+
+keywords = ["sql", "query", "generator", "simple"]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: SQL",
+    "Topic :: Database",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Utilities",
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
