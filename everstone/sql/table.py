@@ -37,6 +37,9 @@ class Table:
     def __str__(self):
         return self.full_name
 
+    def __repr__(self):
+        return f"<Table '{self.full_name}'>"
+
     def __hash__(self):
         return hash(self.full_name)
 
