@@ -89,11 +89,11 @@ class Database(LimitInstances):
         self._prepared = True
 
     def disable_execution(self):
-        """Don't execute SQL statements, divert them to console output instead."""
+        """Return generated SQL without executing when Database.execute is used."""
         self._mock = True
 
     def enable_execution(self):
-        """Restore normal SQL execution status instead of diverting statements to console output."""
+        """Sets Database.execute to it's normal execution behaviour."""
         self._mock = False
 
     async def close(self):
@@ -104,9 +104,7 @@ class Database(LimitInstances):
     async def execute(self, sql: str, *args, timeout: t.Optional[float] = None) -> str:
         """Execute an SQL statement."""
         if self._mock:
-            pretty_sql = sqlparse.format(sql)
-            print(pretty_sql, *args)
-            return str(pretty_sql)
+            return str(sqlparse.format(sql))
         if not self.pool:
             await self.create_pool()
         return await self.pool.execute(sql, *args, timeout=timeout)
