@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "everstone"
-version = "0.1.1"
+version = "0.1.2"
 description = "Simple Database Query Generator"
 authors = ["scragly <29337040+scragly@users.noreply.github.com>"]
 license = "MIT"
@@ -21,7 +21,6 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.9"
 asyncpg = "^0.22.0"
-sqlparse = "^0.4.1"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.9.0"

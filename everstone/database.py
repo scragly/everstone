@@ -5,7 +5,6 @@ import logging
 import typing as t
 
 import asyncpg
-import sqlparse
 
 from .bases import LimitInstances
 from .exceptions import DBError
@@ -104,7 +103,7 @@ class Database(LimitInstances):
     async def execute(self, sql: str, *args, timeout: t.Optional[float] = None) -> str:
         """Execute an SQL statement."""
         if self._mock:
-            return str(sqlparse.format(sql))
+            return sql
         if not self.pool:
             await self.create_pool()
         return await self.pool.execute(sql, *args, timeout=timeout)

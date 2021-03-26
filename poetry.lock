@@ -152,18 +152,10 @@ category = "dev"
 optional = false
 python-versions = "*"
 
-[[package]]
-name = "sqlparse"
-version = "0.4.1"
-description = "A non-validating SQL parser."
-category = "main"
-optional = false
-python-versions = ">=3.5"
-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "8577a8dc71b2e4fe3a0dfc639c679f4517682dcf4e05d6d7c44ee63eef9cbdb5"
+content-hash = "7285384a9d291ebd0a178b9d7be5889723e4b1d4598343c527cc340030823cff"
 
 [metadata.files]
 asyncpg = [
@@ -233,8 +225,4 @@ pyflakes = [
 snowballstemmer = [
     {file = "snowballstemmer-2.1.0-py2.py3-none-any.whl", hash = "sha256:b51b447bea85f9968c13b650126a888aabd4cb4463fca868ec596826325dedc2"},
     {file = "snowballstemmer-2.1.0.tar.gz", hash = "sha256:e997baa4f2e9139951b6f4c631bad912dfd3c792467e2f03d7239464af90e914"},
-]
-sqlparse = [
-    {file = "sqlparse-0.4.1-py3-none-any.whl", hash = "sha256:017cde379adbd6a1f15a61873f43e8274179378e95ef3fede90b5aa64d304ed0"},
-    {file = "sqlparse-0.4.1.tar.gz", hash = "sha256:0f91fd2e829c44362cbcfab3e9ae12e22badaa8a29ad5ff599f9ec109f0454e8"},
 ]
