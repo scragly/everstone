@@ -42,8 +42,8 @@ class Schema(LimitInstances):
 
     async def rename(self, name: str) -> str:
         """Alter the name of this schema."""
-        sql = "ALTER SCHEMA $1 RENAME TO $2"
-        result = await self.db.pool.execute(sql, self.name, name)
+        sql = f"ALTER SCHEMA {self.name} RENAME TO $1"
+        result = await self.db.execute(sql, name)
         del self.__instances__[self.name]
         self.__instances__[name] = self
         return result
@@ -51,19 +51,19 @@ class Schema(LimitInstances):
     async def create(self, *, if_exists: bool = True) -> str:
         """Create the schema on the database."""
         if if_exists:
-            sql = "CREATE SCHEMA $1;"
+            sql = f"CREATE SCHEMA {self.name};"
         else:
-            sql = "CREATE SCHEMA IF NOT EXISTS $1;"
-        results = await self.db.execute(sql, self.name)
+            sql = f"CREATE SCHEMA IF NOT EXISTS {self.name};"
+        results = await self.db.execute(sql)
         self._exists = True
         return results
 
     async def drop(self, *, if_exists: bool = False, cascade: bool = False) -> str:
         """Drop the schema from the database."""
-        sql = "DROP SCHEMA {exists}$1{cascade};"
         exists = "IF EXISTS " if if_exists else ""
         cascade = " CASCADE" if cascade else ""
-        results = await self.db.execute(sql.format(exists=exists, cascade=cascade), self.name)
+        sql = f"DROP SCHEMA {exists}{self.name}{cascade};"
+        results = await self.db.execute(sql)
         self._exists = False
         return results
 
