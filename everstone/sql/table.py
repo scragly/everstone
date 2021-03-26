@@ -28,6 +28,7 @@ class Table:
         self.schema.add_table(self)
 
         self.columns: t.Dict[str, column.Column] = dict()
+        self.constraints: t.Set[Constraint] = set()
 
     @property
     def full_name(self) -> str:
@@ -55,6 +56,10 @@ class Table:
             self.columns[c.name] = c
         return self
 
+    def add_constraints(self, *constraints: Constraint):
+        for c in constraints:
+            self.constraints.add(c)
+
     async def prepare(self):
         """Ensure the table exists in the database."""
         await self.create(if_not_exists=True)
@@ -64,8 +69,10 @@ class Table:
         if not self.columns:
             raise SchemaError("Table creation failed: No columns.")
         exists = "IF NOT EXISTS " if if_not_exists else ""
-        cols = ", ".join(c.definition for c in self.columns.values())
-        sql = f"CREATE TABLE {exists}{self.name} ({cols});"
+        cols = [col.definition for col in self.columns.values()]
+        constraints = [con.sql for con in self.constraints]
+        schema = ", ".join(cols + constraints)
+        sql = f"CREATE TABLE {exists}{self.name} ({schema});"
         return await self.db.execute(sql)
 
     async def drop(self, if_exists: bool = False, cascade: bool = False) -> str:

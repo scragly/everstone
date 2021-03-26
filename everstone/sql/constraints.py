@@ -25,6 +25,9 @@ class ConstraintMeta(abc.ABCMeta):
             return self.sql == other.sql
         return False
 
+    def __hash__(self):
+        return hash(self.sql)
+
     def named(cls, name: str) -> NamedConstraint:
         """Returns this constraint as a named constraint."""
         return NamedConstraint(cls, name)
@@ -53,6 +56,9 @@ class Constraint(metaclass=ConstraintMeta):
         if isinstance(other, ConstraintMeta) or isinstance(type(other), ConstraintMeta):
             return self.sql == other.sql
         return False
+
+    def __hash__(self):
+        return hash(self.sql)
 
     def _named(self, name: str) -> NamedConstraint:
         """Instance-specific implementation of Constraint.named."""
