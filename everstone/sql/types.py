@@ -9,7 +9,7 @@ import zoneinfo
 __all__ = (
     "Integer", "SmallInteger", "BigInteger", "Serial", "SmallSerial", "BigSerial", "Numeric", "Decimal", "Real",
     "DoublePrecision", "Money", "Text", "ByteA", "Timestamp", "TimestampTZ", "Date", "Time", "Interval", "Boolean",
-    "JSON", "JSONB", "Array", "SQLType",
+    "JSON", "JSONB", "Array", "SQLType", "SQLTypeMeta",
 )
 
 
