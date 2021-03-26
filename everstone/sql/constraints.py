@@ -77,6 +77,7 @@ class CompositeConstraint(Constraint):
     """Composite class representing an SQL constraint that uses more than one column."""
 
     def __init__(self, constraint: t.Union[Constraint, ConstraintMeta], *columns: t.Union[Column, str]):
+        self.named = self._named
         self.constraint = constraint
         self.columns = columns
         cols = ", ".join(c.name if isinstance(c, Column) else c for c in columns)
