@@ -15,7 +15,7 @@ class ConstraintMeta(abc.ABCMeta):
     sql: str
 
     def __repr__(self):
-        return f'<{self.__name__} sql="{self.sql}">'
+        return f'<{self.__name__} sql="{getattr(self, "sql", None)}">'
 
     def __str__(self):
         return self.sql
@@ -26,7 +26,7 @@ class ConstraintMeta(abc.ABCMeta):
         return False
 
     def __hash__(self):
-        return hash(self.sql)
+        return hash(repr(self))
 
     def named(cls, name: str) -> NamedConstraint:
         """Returns this constraint as a named constraint."""
@@ -47,7 +47,7 @@ class Constraint(metaclass=ConstraintMeta):
         self.columns = self._columns
 
     def __repr__(self):
-        return f'<{self.__class__.__name__} sql="{self.sql}">'
+        return f'<{self.__class__.__name__} sql="{getattr(self, "sql", None)}">'
 
     def __str__(self):
         return self.sql
@@ -58,7 +58,7 @@ class Constraint(metaclass=ConstraintMeta):
         return False
 
     def __hash__(self):
-        return hash(self.sql)
+        return hash(repr(self))
 
     def _named(self, name: str) -> NamedConstraint:
         """Instance-specific implementation of Constraint.named."""
@@ -132,3 +132,6 @@ class ForeignKey(Constraint):
         self.table = table
         self.column = column.name if isinstance(column, Column) else column
         self.sql = f"REFERENCES {self.table} ({self.column})"
+
+
+Constraints = t.Union[Constraint, CompositeConstraint, NamedConstraint, ConstraintMeta]

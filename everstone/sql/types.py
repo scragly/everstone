@@ -6,12 +6,6 @@ import decimal
 import typing as t
 import zoneinfo
 
-__all__ = (
-    "Integer", "SmallInteger", "BigInteger", "Serial", "SmallSerial", "BigSerial", "Numeric", "Decimal", "Real",
-    "DoublePrecision", "Money", "Text", "ByteA", "Timestamp", "TimestampTZ", "Date", "Time", "Interval", "Boolean",
-    "JSON", "JSONB", "Array", "SQLType", "SQLTypeMeta",
-)
-
 
 # region: Bases
 
@@ -56,8 +50,10 @@ class SQLTypeMeta(abc.ABCMeta):
         SQLTypeMeta.__types__[cls.py] = cls
 
     def __repr__(self):
-        classname = self.__name__
-        return f'<{classname} python={self.py.__name__} sql="{self.sql}">'
+        py = getattr(self, "py", None)
+        if py:
+            py = py.__name__
+        return f'<{self.__name__} python={py} sql="{getattr(self, "sql", None)}">'
 
     def __str__(self):
         return self.sql
@@ -66,6 +62,9 @@ class SQLTypeMeta(abc.ABCMeta):
         if isinstance(other, SQLTypeMeta) or isinstance(type(other), SQLTypeMeta):
             return self.sql == other.sql
         return False
+
+    def __hash__(self):
+        return hash(repr(self))
 
 
 class SQLType(metaclass=SQLTypeMeta):
@@ -78,8 +77,10 @@ class SQLType(metaclass=SQLTypeMeta):
         pass
 
     def __repr__(self):
-        classname = self.__class__.__name__
-        return f'<{classname} python={self.py.__name__} sql="{self.sql}">'
+        py = getattr(self, "py", None)
+        if py:
+            py = py.__name__
+        return f'<{self.__class__.__name__} python={py} sql="{getattr(self, "sql", None)}">'
 
     def __str__(self):
         return self.sql
@@ -89,6 +90,8 @@ class SQLType(metaclass=SQLTypeMeta):
             return self.sql == other.sql
         return False
 
+    def __hash__(self):
+        return hash(repr(self))
 
 # endregion
 
@@ -391,3 +394,6 @@ class Array(SQLType):
         self.sql = f"{element_type}[{size}]"
 
 # endregion
+
+
+SQLTypes = t.Union[SQLType, SQLTypeMeta]

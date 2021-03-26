@@ -5,15 +5,15 @@ import typing as t
 from . import aggregates, comparisons
 
 if t.TYPE_CHECKING:
-    from .constraints import Constraint
-    from .types import SQLType
+    from .constraints import Constraints
+    from .types import SQLTypes
     from .table import Table
 
 
 class Column(comparisons.Comparable):
     """Reprents an SQL column."""
 
-    def __init__(self, name: str, type: SQLType, constraint: t.Optional[Constraint] = None):
+    def __init__(self, name: str, type: SQLTypes, constraint: t.Optional[Constraints] = None):
         self.name = name
         self.type = type
         self.constraint = constraint
