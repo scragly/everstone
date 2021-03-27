@@ -31,7 +31,7 @@ class Column(comparisons.Comparable):
         sql = f"{self.name} {self.type}"
         if self.constraints:
             sql += " "
-            sql += " ".join(str(self.constraints))
+            sql += " ".join(str(c) for c in self.constraints)
         return sql
 
     @property
