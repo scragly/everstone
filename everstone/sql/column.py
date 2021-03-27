@@ -18,6 +18,12 @@ class Column(comparisons.Comparable):
         self.type = type
         self.constraint = constraint
         self.table: t.Optional[Table] = None
+        self._default = None
+
+    @property
+    def default(self) -> t.Any:
+        """Default for the column."""
+        return self._default
 
     @property
     def definition(self) -> str:
