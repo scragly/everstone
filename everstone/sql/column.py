@@ -21,7 +21,7 @@ class Column(comparisons.Comparable):
 
     @property
     def definition(self) -> str:
-        """Return the SQL definition for this column."""
+        """SQL definition for this column."""
         sql = f"{self.name} {self.type}"
         if self.constraint:
             sql += f" {self.constraint}"
@@ -29,14 +29,14 @@ class Column(comparisons.Comparable):
 
     @property
     def full_name(self) -> str:
-        """Return the fully qualified name for the column."""
+        """Fully qualified name for the column."""
         if self.table:
             return f"{self.table.name}.{self.name}"
         else:
             return self.name
 
     def bind_table(self, table: Table) -> Column:
-        """Binds a table to this column."""
+        """Bind the given table to this column."""
         self.table = table
         return self
 
@@ -54,47 +54,47 @@ class Column(comparisons.Comparable):
 
     @property
     def avg(self) -> aggregates.Avg:
-        """Return the avg aggregate for this column."""
+        """Average of all non-null values in this column."""
         return aggregates.Avg(self).as_("avg")
 
     @property
     def bit_and(self) -> aggregates:
-        """Return the bit_and aggregate for this column."""
+        """Bitwise AND of all non-null values in this column."""
         return aggregates.Avg(self).as_("bit_and")
 
     @property
     def bit_or(self) -> aggregates:
-        """Return the bit_or aggregate for this column."""
+        """Bitwise OR of all non-null values in this column."""
         return aggregates.Avg(self).as_("bit_or")
 
     @property
     def bool_and(self) -> aggregates:
-        """Return the bool_and aggregate for this column."""
+        """Returns True if ALL non-null values in this column are True."""
         return aggregates.Avg(self).as_("bool_and")
 
     @property
     def bool_or(self) -> aggregates:
-        """Return the bool_or aggregate for this column."""
+        """Returns True if ANY non-null values in this column are True."""
         return aggregates.Avg(self).as_("bool_or")
 
     @property
     def count(self) -> aggregates.Count:
-        """Return the count aggregate for this column."""
+        """Counts of all rows."""
         return aggregates.Count(self).as_("count")
 
     @property
     def max(self) -> aggregates.Max:
-        """Return the max aggregate for this column."""
+        """Maximum of all non-null values in this column."""
         return aggregates.Max(self).as_("max")
 
     @property
     def min(self) -> aggregates.Min:
-        """Return the min aggregate for this column."""
+        """Minimum of all non-null values in this column."""
         return aggregates.Min(self).as_("min")
 
     @property
     def sum(self) -> aggregates.Sum:
-        """Return the sum aggregate for this column."""
+        """Sum of all non-null values in this column."""
         return aggregates.Sum(self).as_("sum")
 
     # endregion
