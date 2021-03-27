@@ -13,9 +13,9 @@ class Aggregate(comparisons.Comparable):
 
     name: str
 
-    def __init__(self, column: t.Optional[Column, str], alias: t.Optional[str] = None):
+    def __init__(self, column: t.Optional[Column, str]):
         self.column = column
-        self.alias = alias
+        self.alias = None
 
     @property
     def sql(self) -> str:
@@ -37,8 +37,8 @@ class Aggregate(comparisons.Comparable):
 
     def __repr__(self) -> str:
         if self.alias:
-            return f"<{self.__class__.__name__} alias={self.alias} column={self.column} sql='{self.sql}'>"
-        return f"<{self.__class__.__name__} column={self.column} sql='{self.sql}'>"
+            return f"<{self.__class__.__name__} '{self.sql}'>"
+        return f"<{self.__class__.__name__} '{self.sql}'>"
 
     def __str__(self) -> str:
         return self.sql
