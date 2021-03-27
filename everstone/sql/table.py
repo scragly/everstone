@@ -82,8 +82,8 @@ class Table:
         sql = f"DROP TABLE {exists}{self.name}{cascade};"
         return await self.db.execute(sql)
 
-    def Column(self, name: str, type: SQLType, constraint: t.Optional[Constraint] = None) -> Column:
+    def Column(self, name: str, type: SQLType, *constraints: Constraint) -> Column:
         """Return a Column instance bound to this table."""
-        col = column.Column(name, type, constraint).bind_table(self)
+        col = column.Column(name, type, *constraints).bind_table(self)
         self.columns[col.name] = col
         return col

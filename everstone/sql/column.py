@@ -13,10 +13,10 @@ if t.TYPE_CHECKING:
 class Column(comparisons.Comparable):
     """Reprents an SQL column."""
 
-    def __init__(self, name: str, type: SQLTypes, constraint: t.Optional[Constraints] = None):
+    def __init__(self, name: str, type: SQLTypes, *constraints_: Constraints):
         self.name = name
         self.type = type
-        self.constraint = constraint
+        self.constraints = set(constraints_) if constraints_ else set()
         self.table: t.Optional[Table] = None
         self._default = None
 
@@ -29,8 +29,9 @@ class Column(comparisons.Comparable):
     def definition(self) -> str:
         """SQL definition for this column."""
         sql = f"{self.name} {self.type}"
-        if self.constraint:
-            sql += f" {self.constraint}"
+        if self.constraints:
+            sql += " "
+            sql += " ".join(str(self.constraints))
         return sql
 
     @property

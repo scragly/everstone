@@ -3,9 +3,8 @@ from __future__ import annotations
 import abc
 import typing as t
 
-from .column import Column
-
 if t.TYPE_CHECKING:
+    from .column import Column
     from .table import Table
 
 
@@ -86,7 +85,7 @@ class CompositeConstraint(Constraint):
         self.named = self._named
         self.constraint = constraint
         self.columns = columns
-        cols = ", ".join(c.name if isinstance(c, Column) else c for c in columns)
+        cols = ", ".join(getattr(c, "name", c) for c in columns)
         self.sql = f"{constraint.sql} ({cols})"
 
 
