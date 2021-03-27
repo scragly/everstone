@@ -79,16 +79,16 @@ class Count(Aggregate):
 
     name = "count"
 
-    def __init__(self, value: t.Optional[Column, table.Table, str], alias: t.Optional[str] = None):
+    def __init__(self, value: t.Optional[Column, table.Table, str]):
         if isinstance(value, table.Table):
-            super().__init__(f"{value}.*" if value else "*", alias)
+            super().__init__(f"{value}.*" if value else "*")
         else:
-            super().__init__(f"{value}", alias)
+            super().__init__(f"{value}")
 
     @classmethod
-    def all(cls, alias: t.Optional = None) -> Count:
+    def all(cls) -> Count:
         """Computes the number of all input rows in a table."""
-        return cls("*", alias)
+        return cls("*")
 
 
 class Max(Aggregate):
