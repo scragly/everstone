@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import typing as t
 
-from . import column
+from . import aggregates, column
 from .. import database
 from ..exceptions import SchemaError
 
@@ -34,6 +34,11 @@ class Table:
     def full_name(self) -> str:
         """Return the fully qualified name of the current table."""
         return f"{self.schema}.{self.name}"
+
+    @property
+    def count(self) -> aggregates.Count:
+        """Returns an aggregate representing count(*) for this table."""
+        return aggregates.Count(self)
 
     def __str__(self):
         return self.full_name
