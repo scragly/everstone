@@ -38,7 +38,7 @@ class Column(comparisons.Comparable):
     def full_name(self) -> str:
         """Fully qualified name for the column."""
         if self.table:
-            return f"{self.table.name}.{self.name}"
+            return f"{self.table}.{self.name}"
         else:
             return self.name
 
