@@ -119,3 +119,7 @@ class Table:
         col = column.Column(name, type, *constraints).bind_table(self)
         self.columns[col.name] = col
         return col
+
+    def select(self, *columns: Column) -> select.Select:
+        """Begin a select query for this table."""
+        return select.Select(self.db).select(*columns)
