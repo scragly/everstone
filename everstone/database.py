@@ -68,6 +68,10 @@ class Database(LimitInstances):
             return str(self) == str(self)
         return False
 
+    @classmethod
+    def get_default(cls):
+        return cls.__instances__["__default__"]
+
     async def create_pool(self):
         """Create the asyncpg connection pool for this database connection to use."""
         if self.pool:
