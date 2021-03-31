@@ -20,6 +20,13 @@ class Column(comparisons.Comparable):
         self.table: t.Optional[Table] = None
         self._default = None
 
+        # query modifiers
+        self._sort_direction = None
+
+    @property
+    def sort_direction(self) -> t.Optional[str]:
+        return self._sort_direction
+
     @property
     def default(self) -> t.Any:
         """Default for the column."""
@@ -103,5 +110,19 @@ class Column(comparisons.Comparable):
     def sum(self) -> aggregates.Sum:
         """Sum of all non-null values in this column."""
         return aggregates.Sum(self).as_("sum")
+
+    # endregion
+
+    # region: query modifiers
+
+    @property
+    def asc(self) -> Column:
+        self._sort_direction = "ASC"
+        return self
+
+    @property
+    def desc(self) -> Column:
+        self._sort_direction = "DESC"
+        return self
 
     # endregion
