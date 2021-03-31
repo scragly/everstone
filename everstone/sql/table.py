@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import contextlib
 import typing as t
 
-from . import aggregates, column
+from . import aggregates, column, select
 from .. import database
 from ..exceptions import SchemaError
 
@@ -10,6 +11,29 @@ if t.TYPE_CHECKING:
     from .constraints import Constraint
     from .schema import Schema
     from .types import SQLType
+
+
+class Columns:
+    def __init__(self, table: Table):
+        self.table: Table = table
+        self._columns: t.Dict[str, column.Column] = dict()
+
+    def __bool__(self):
+        return bool(self._columns)
+
+    def __iter__(self):
+        return iter(self._columns.values())
+
+    def __getitem__(self, item: str) -> column.Column:
+        return self._columns[item]
+
+    def __setitem__(self, key: str, value: column.Column):
+        self._columns[key] = value
+
+    def __getattr__(self, item) -> column.Column:
+        with contextlib.suppress(KeyError):
+            return self._columns[item]
+        raise AttributeError(f"Column '{item}' not found on '{self.table}'.")
 
 
 class Table:
@@ -27,7 +51,7 @@ class Table:
 
         self.schema.add_table(self)
 
-        self.columns: t.Dict[str, column.Column] = dict()
+        self.columns: Columns = Columns(self)
         self.constraints: t.Set[Constraint] = set()
 
     @property
@@ -44,7 +68,10 @@ class Table:
         return self.full_name
 
     def __repr__(self):
-        return f"<Table '{self.full_name}'>"
+        if self.columns:
+            cols = ", ".join(c.name for c in self.columns)
+            return f"<Table {self.full_name} ({cols})>"
+        return f"<Table {self.full_name}>"
 
     def __hash__(self):
         return hash(self.full_name)
@@ -74,7 +101,7 @@ class Table:
         if not self.columns:
             raise SchemaError("Table creation failed: No columns.")
         exists = "IF NOT EXISTS " if if_not_exists else ""
-        cols = [col.definition for col in self.columns.values()]
+        cols = [col.definition for col in self.columns]
         constraints = [con.sql for con in self.constraints]
         schema = ", ".join(cols + constraints)
         sql = f"CREATE TABLE {exists}{self.name} ({schema});"
