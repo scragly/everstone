@@ -22,10 +22,20 @@ class Column(comparisons.Comparable):
 
         # query modifiers
         self._sort_direction = None
+        self._grouped = None
 
     @property
     def sort_direction(self) -> t.Optional[str]:
         return self._sort_direction
+
+    @property
+    def grouped(self):
+        self._grouped = True
+        return self
+
+    def reset_modifiers(self):
+        self._sort_direction = None
+        self._grouped = None
 
     @property
     def default(self) -> t.Any:
