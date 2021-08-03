@@ -22,8 +22,7 @@ class Aggregate(comparisons.Comparable):
     def sql(self) -> str:
         """Generates the SQL statement representing the aggregate function."""
         distinct = "DISTINCT " if self._distinct else ""
-        alias = f" AS {self.alias}" if self.alias else ""
-        return f"{self.name}({distinct}{self.column}){alias}"
+        return f"{self.name}({distinct}{self.column})"
 
     @property
     def distinct(self) -> Aggregate:
@@ -31,16 +30,17 @@ class Aggregate(comparisons.Comparable):
         self._distinct = True
         return self
 
-    def as_(self, alias: str) -> Aggregate:
+    def as_(self, alias: str) -> sql:
         """Sets an alias name to represent the result of the aggregate function."""
+        definition = self.sql
         self.alias = alias
-        return self
+        return f"{definition} AS {alias}"
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} '{self.sql}'>"
 
     def __str__(self) -> str:
-        return self.sql
+        return self.alias or self.sql
 
 
 class Avg(Aggregate):

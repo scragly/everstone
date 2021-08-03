@@ -26,24 +26,26 @@ def test_agg_col_str(str_column_sample):
     agg = aggregates.Aggregate(str_column_sample)
     assert agg.name == "test_agg_col_str"
     assert agg.sql == "test_agg_col_str(string_column_a)"
-    assert agg == "test_agg_col_str(string_column_a)"
     assert str(agg) == "test_agg_col_str(string_column_a)"
     assert repr(agg) == "<Aggregate 'test_agg_col_str(string_column_a)'>"
-    assert agg.as_("test_alias").sql == "test_agg_col_str(string_column_a) AS test_alias"
-    assert agg.distinct.sql == "test_agg_col_str(DISTINCT string_column_a) AS test_alias"
+    assert agg.as_("test_alias") == "test_agg_col_str(string_column_a) AS test_alias"
+    assert str(agg) == "test_alias"
+    assert agg.distinct.sql == "test_agg_col_str(DISTINCT string_column_a)"
+    assert (agg == "value") == "test_alias = 'value'"
 
 
 def test_agg_col_obj(obj_column_sample):
-    """Test aggregate"""
+    """Test aggregate whe using a Column object arg."""
     aggregates.Aggregate.name = "test_agg_col_obj"
     agg = aggregates.Aggregate(obj_column_sample)
     assert agg.name == "test_agg_col_obj"
     assert agg.sql == "test_agg_col_obj(obj_column_b)"
-    assert agg == "test_agg_col_obj(obj_column_b)"
     assert str(agg) == "test_agg_col_obj(obj_column_b)"
     assert repr(agg) == "<Aggregate 'test_agg_col_obj(obj_column_b)'>"
-    assert agg.as_("test_alias").sql == "test_agg_col_obj(obj_column_b) AS test_alias"
-    assert agg.distinct.sql == "test_agg_col_obj(DISTINCT obj_column_b) AS test_alias"
+    assert agg.as_("test_alias") == "test_agg_col_obj(obj_column_b) AS test_alias"
+    assert str(agg) == "test_alias"
+    assert agg.distinct.sql == "test_agg_col_obj(DISTINCT obj_column_b)"
+    assert (agg == "value") == "test_alias = 'value'"
 
 
 def test_avg(str_column_sample, obj_column_sample):
