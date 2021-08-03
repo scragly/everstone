@@ -44,7 +44,7 @@ class Table:
 
         if isinstance(schema, database.Database):
             self.db: database.Database = schema
-            self.schema: Schema = self.db.Schema("public")
+            self.schema: Schema = self.db.public_schema
         else:
             self.db: database.Database = schema.db
             self.schema: Schema = schema

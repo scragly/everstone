@@ -45,6 +45,10 @@ class Database(LimitInstances):
 
         return Database(name)
 
+    @property
+    def public_schema(self):
+        return self.Schema("public")
+
     def __call__(self, name: str) -> Database:
         """Return the instance representing the given database name."""
         return Database(name)
