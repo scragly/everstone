@@ -20,7 +20,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-asyncpg = "^0.22.0"
+asyncpg = "^0.23.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.9.0"
@@ -30,7 +30,22 @@ flake8-docstrings = "^1.6.0"
 flake8-string-format = "^0.3.0"
 flake8-tidy-imports = "^4.2.1"
 flake8-todo = "^0.7"
+pytest = "^6.2.4"
+pytest-asyncio = "^0.15.1"
+coverage = {extras = ["yaml"], version = "^5.5"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source_pkgs = ["everstone"]
+source = ["tests"]
+
+[tool.coverage.report]
+fail_under = 100
+exclude_lines = ["pragma: no cover", "if t.TYPE_CHECKING:"]
