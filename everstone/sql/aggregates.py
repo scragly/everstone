@@ -16,18 +16,19 @@ class Aggregate(comparisons.Comparable):
     def __init__(self, column: t.Optional[Column, str]):
         self.column = column
         self.alias = None
+        self._distinct = False
 
     @property
     def sql(self) -> str:
         """Generates the SQL statement representing the aggregate function."""
-        if self.alias:
-            return f"{self.name}({self.column}) AS {self.alias}"
-        return f"{self.name}({self.column})"
+        distinct = "DISTINCT " if self._distinct else ""
+        alias = f" AS {self.alias}" if self.alias else ""
+        return f"{self.name}({distinct}{self.column}){alias}"
 
     @property
     def distinct(self) -> Aggregate:
         """Sets column values to be DISTINCT when used in the aggregate function."""
-        self.column = f"DISTINCT {self.column}"
+        self._distinct = True
         return self
 
     def as_(self, alias: str) -> Aggregate:
@@ -36,8 +37,6 @@ class Aggregate(comparisons.Comparable):
         return self
 
     def __repr__(self) -> str:
-        if self.alias:
-            return f"<{self.__class__.__name__} '{self.sql}'>"
         return f"<{self.__class__.__name__} '{self.sql}'>"
 
     def __str__(self) -> str:
@@ -79,8 +78,10 @@ class Count(Aggregate):
 
     name = "count"
 
-    def __init__(self, value: t.Optional[Column, table.Table, str]):
-        if isinstance(value, table.Table):
+    def __init__(self, value: t.Optional[Column, table.Table, str] = None):
+        if not value:
+            super().__init__("*")
+        elif isinstance(value, table.Table):
             super().__init__(f"{value}.*" if value else "*")
         else:
             super().__init__(f"{value}")
