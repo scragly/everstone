@@ -3,8 +3,10 @@ from __future__ import annotations
 import abc
 import typing as t
 
+from .column import Column
+from ..exceptions import SchemaError
+
 if t.TYPE_CHECKING:
-    from .column import Column
     from .table import Table
 
 
@@ -127,8 +129,17 @@ class ForeignKey(Constraint):
 
     sql: str
 
-    def __init__(self, table: t.Union[Table, str], column: t.Union[Column, str]):
-        self.table = table
+    def __init__(self, column: t.Union[Column, str], *, table: t.Union[Table, str, None] = None):
+        if column.table:
+            self.table = column.table
+        elif table:
+            self.table = table
+        else:
+            raise SchemaError(
+                "Foreign keys must be bound to a table. "
+                "Use a bound Column instance or provide a Table for the table kwarg."
+            )
+
         self.column = column.name if isinstance(column, Column) else column
         self.sql = f"REFERENCES {self.table} ({self.column})"
 
