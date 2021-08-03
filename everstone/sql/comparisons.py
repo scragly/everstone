@@ -2,7 +2,7 @@ import abc
 import typing as t
 
 
-class Comparable(abc.ABC):
+class Comparable(metaclass=abc.ABCMeta):
     """Base class to define an SQL object as able to use SQL comparison operations."""
 
     @staticmethod
