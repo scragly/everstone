@@ -14,15 +14,20 @@ class Column(comparisons.Comparable):
     """Reprents an SQL column."""
 
     def __init__(self, name: str, type: SQLTypes, *constraints_: Constraints):
-        self.name = name
+        self._name = name
         self.type = type
         self.constraints = set(constraints_) if constraints_ else set()
+        self.alias: t.Optional[str] = None
         self.table: t.Optional[Table] = None
         self._default = None
 
         # query modifiers
         self._sort_direction = None
         self._grouped = None
+
+    @property
+    def name(self) -> str:
+        return self.alias or self._name
 
     @property
     def sort_direction(self) -> t.Optional[str]:
@@ -45,7 +50,7 @@ class Column(comparisons.Comparable):
     @property
     def definition(self) -> str:
         """SQL definition for this column."""
-        sql = f"{self.name} {self.type}"
+        sql = f"{self._name} {self.type}"
         if self.constraints:
             sql += " "
             sql += " ".join(str(c) for c in self.constraints)
@@ -55,7 +60,7 @@ class Column(comparisons.Comparable):
     def full_name(self) -> str:
         """Fully qualified name for the column."""
         if self.table:
-            return f"{self.table}.{self.name}"
+            return f"{self.table}.{self._name}"
         else:
             return self.name
 
@@ -134,5 +139,11 @@ class Column(comparisons.Comparable):
     def desc(self) -> Column:
         self._sort_direction = "DESC"
         return self
+
+    def as_(self, alias: str) -> str:
+        """Sets an alias name to represent this column and returns it's definition."""
+        definition = f"{self.full_name} AS {alias}"
+        self.alias = alias
+        return definition
 
     # endregion
