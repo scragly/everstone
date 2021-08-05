@@ -17,7 +17,7 @@ def obj_column_sample():
 
 @pytest.fixture
 def table_sample():
-    return everstone.Database("mockdb").Table("example_table")
+    return everstone.db.Table("example_table")
 
 
 def test_agg_col_str(str_column_sample):
