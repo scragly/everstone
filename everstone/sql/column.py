@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import typing as t
 
-from everstone import exceptions
 from . import aggregates, comparisons
+from .. import exceptions
 
 if t.TYPE_CHECKING:
     from .constraints import Constraints
