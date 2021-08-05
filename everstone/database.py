@@ -18,6 +18,8 @@ log = logging.getLogger(__name__)
 class Database(LimitInstances):
     """Represents a database."""
 
+    __instances__: dict[str, Database]
+
     def __init__(self, name: str):
         self.name = name
         self.user: t.Optional[str] = None
@@ -88,11 +90,11 @@ class Database(LimitInstances):
         if self.pool:
             self.pool.close()
         if not self.url:
-            raise DBError("No database available. Please define a connection with Database.connect.")
-        self.pool = await asyncpg.create_pool(self.url, init=self._enable_json)
+            raise DBError("Please define a connection with Database.connect.")
+        self.pool = await asyncpg.create_pool(self.url, init=self._enable_json)  # pragma: no cover
 
     @staticmethod
-    async def _enable_json(conn: asyncpg.Connection):
+    async def _enable_json(conn: asyncpg.Connection):  # pragma: no cover
         await conn.set_type_codec("jsonb", encoder=json.dumps, decoder=json.loads, schema="pg_catalog")
         await conn.set_type_codec("json", encoder=json.dumps, decoder=json.loads, schema="pg_catalog")
 
@@ -121,7 +123,7 @@ class Database(LimitInstances):
             return sql
         if not self.pool:
             await self.create_pool()
-        return await self.pool.execute(sql, *args, timeout=timeout)
+        return await self.pool.execute(sql, *args, timeout=timeout)  # pragma: no cover
 
     def Schema(self, name: str) -> Schema:
         """Return a bound Schema for this database."""
