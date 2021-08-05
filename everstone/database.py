@@ -68,7 +68,7 @@ class Database(LimitInstances):
 
     def __eq__(self, other: t.Any):
         if isinstance(other, Database):
-            return str(self) == str(self)
+            return str(self) == str(other)
         return False
 
     def __getitem__(self, name: str) -> Database:
