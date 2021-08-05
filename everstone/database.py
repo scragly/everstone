@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import typing as t
+from contextvars import ContextVar
 
 import asyncpg
 
@@ -32,6 +34,7 @@ class Database(LimitInstances):
 
         self._mock = False
         self._prepared = False
+        self._tracking = ContextVar(f"stmt_tracking:{name}")
 
     @classmethod
     def connect(cls, name: str, user: str, password: str, *, host: str = "localhost", port: int = 5432) -> Database:
@@ -112,16 +115,34 @@ class Database(LimitInstances):
         """Sets Database.execute to it's normal execution behaviour."""
         self._mock = False
 
-    async def close(self):
+    @contextlib.contextmanager
+    def stmt_tracking(self):
+        """Collects raw executed statements until exit when execution is disabled."""
+        ctx_token = self._tracking.set([])
+        try:
+            yield self
+        finally:
+            self._tracking.reset(ctx_token)
+
+    async def close(self):  # pragma: no cover
         """Close the asyncpg connection pool for this database."""
         if self.pool:
             await self.pool.close()
 
-    async def execute(self, sql: str, *args, timeout: t.Optional[float] = None) -> str:
+    async def execute(self, sql: str, *args, timeout: t.Optional[float] = None) -> t.Union[str, tuple[str, t.Any]]:
         """Execute an SQL statement."""
         if self._mock:
-            return sql
-        if not self.pool:
+            try:
+                stmt_list = self._tracking.get()
+                stmt_list.append((sql, args))
+            except LookupError:
+                pass
+            if not args:
+                return sql
+            else:
+                return sql, *args
+
+        if not self.pool:  # pragma: no cover
             await self.create_pool()
         return await self.pool.execute(sql, *args, timeout=timeout)  # pragma: no cover
 
