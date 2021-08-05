@@ -148,7 +148,9 @@ class Database(LimitInstances):
 
     def Schema(self, name: str) -> Schema:
         """Return a bound Schema for this database."""
-        return Schema(name, self)
+        s = Schema(name, self)
+        self.schemas.add(s)
+        return s
 
     def Table(self, name: str) -> Table:
         """Return a bound Table for the public schema on this database."""
