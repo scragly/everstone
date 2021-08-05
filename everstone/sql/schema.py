@@ -42,10 +42,11 @@ class Schema(LimitInstances):
 
     async def rename(self, name: str) -> str:
         """Alter the name of this schema."""
-        sql = f"ALTER SCHEMA {self.name} RENAME TO $1"
+        sql = f"ALTER SCHEMA {self.name} RENAME TO $1;"
         result = await self.db.execute(sql, name)
         del self.__instances__[self.name]
         self.__instances__[name] = self
+        self.name = name
         return result
 
     async def create(self, *, if_exists: bool = True) -> str:
