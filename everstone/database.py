@@ -44,8 +44,6 @@ class Database(LimitInstances):
         db.url = f"postgres://{user}:{password}@{host}:{port}/{name}"
         return db
 
-        return Database(name)
-
     @property
     def public_schema(self):
         return self.Schema("public")
@@ -72,6 +70,14 @@ class Database(LimitInstances):
         if isinstance(other, Database):
             return str(self) == str(self)
         return False
+
+    def __getitem__(self, name: str) -> Database:
+        """Retrieve an existing database with the given name."""
+        return self.__instances__[name]
+
+    def __delitem__(self, name: str):
+        """Delete a database instance by it's name."""
+        del self.__instances__[name]
 
     @classmethod
     def get_default(cls):
