@@ -61,7 +61,7 @@ class Database(LimitInstances):
     def __repr__(self):
         status = " disabled" if self._mock else ""
         if self.user:
-            return f"<Database name='{self.name}' user='{self.user}'{status}>"
+            return f"<Database '{self.name}' user='{self.user}'{status}>"
         else:
             return f"<Database '{self.name}'{status}>"
 
