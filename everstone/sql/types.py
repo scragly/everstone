@@ -25,7 +25,7 @@ class SpecialValue(abc.ABC):
             return self._py_value
 
     def __repr__(self):
-        return f"SpecialValue({self.py}, '{self.sql})'"
+        return f'SpecialValue({self.py}, "{self.sql}")'
 
     def __str__(self):
         return self.sql
@@ -52,8 +52,8 @@ class SQLTypeMeta(abc.ABCMeta):
     def __repr__(self):
         py = getattr(self, "py", None)
         if py:
-            py = py.__name__
-        return f'<{self.__name__} python={py} sql="{getattr(self, "sql", None)}">'
+            py = f"'{py.__name__}'"
+        return f"<{self.__name__} python={py} sql='{getattr(self, 'sql', None)}'>"
 
     def __str__(self):
         return self.sql
@@ -78,9 +78,9 @@ class SQLType(metaclass=SQLTypeMeta):
 
     def __repr__(self):
         py = getattr(self, "py", None)
-        if py:
-            py = py.__name__
-        return f'<{self.__class__.__name__} python={py} sql="{getattr(self, "sql", None)}">'
+        if py:  # pragma: no cover
+            py = f"'{py.__name__}'"
+        return f"<{self.__class__.__name__} python={py} sql='{getattr(self, 'sql', None)}'>"
 
     def __str__(self):
         return self.sql
@@ -343,9 +343,6 @@ class Interval(SQLType):
 
     py = datetime.timedelta
     sql = "INTERVAL"
-
-    def __init__(self, precision: int):  # noqa
-        self.precision = precision
 
 
 # endregion
