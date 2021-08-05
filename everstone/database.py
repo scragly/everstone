@@ -38,10 +38,11 @@ class Database(LimitInstances):
             db = cls.__instances__["__default__"]
             cls.__instances__[name] = db
             db.name = name
-            db.user = user
-            db.url = f"postgres://{user}:{password}@{host}:{port}/{name}"
-            # noinspection PyTypeChecker
-            return db
+        else:
+            db = Database(name)
+        db.user = user
+        db.url = f"postgres://{user}:{password}@{host}:{port}/{name}"
+        return db
 
         return Database(name)
 
