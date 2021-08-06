@@ -57,9 +57,12 @@ class Column(comparisons.Comparable):
     @property
     def definition(self) -> str:
         """SQL definition for this column."""
-        sql = f"{self._name} {self.type}"
-        sql += "".join(f" {c}" for c in self.constraints)
-        return sql
+        if not self.alias:
+            sql = f"{self._name} {self.type}"
+            sql += "".join(f" {c}" for c in self.constraints)
+            return sql
+        else:
+            return f"{self.full_name} AS {self.alias}"
 
     @property
     def full_name(self) -> str:
@@ -67,18 +70,26 @@ class Column(comparisons.Comparable):
         if self.table:
             return f"{self.table}.{self._name}"
         else:
-            return self.name
+            return self._name
 
     def bind_table(self, table: Table) -> Column:
         """Bind the given table to this column."""
         self.table = table
         return self
 
-    def as_(self, alias: str) -> str:
+    def as_(self, alias: str) -> Column:
         """Sets an alias name to represent this column and returns it's definition."""
-        definition = f"{self.full_name} AS {alias}"
-        self.alias = alias
-        return definition
+        c = self.copy()
+        c.alias = alias
+        return c
+
+    def copy(self) -> Column:
+        c = Column(self._name, self.type, *self.constraints, default=self._default)
+        c.alias = self.alias
+        c.table = self.table
+        c._sort_direction = self._sort_direction
+        c._grouped = self._grouped
+        return c
 
     # region: meta
 
@@ -143,10 +154,12 @@ class Column(comparisons.Comparable):
 
     @property
     def asc(self) -> Column:
-        self._sort_direction = "ASC"
-        return self
+        c = self.copy()
+        c._sort_direction = "ASC"
+        return c
 
     @property
     def desc(self) -> Column:
-        self._sort_direction = "DESC"
-        return self
+        c = self.copy()
+        c._sort_direction = "DESC"
+        return c

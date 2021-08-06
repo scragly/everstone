@@ -18,8 +18,10 @@ def test_column_unbound_names():
     assert str(col) == "testing_a"
     assert col == "testing_a"
     assert repr(col) == "<Column testing_a TEXT>"
-    assert col.as_("alias_a") == "testing_a AS alias_a"
-    assert col.full_name == "alias_a"
+    a = col.as_("alias_a")
+    assert a.definition == "testing_a AS alias_a"
+    assert a.full_name == "testing_a"
+    assert col.definition == "testing_a TEXT"
 
 
 def test_column_bound_names():
@@ -62,3 +64,17 @@ def test_column_aggregates(test_col):
     assert test_col.max == "max(example_column) AS example_column_max"
     assert test_col.min == "min(example_column) AS example_column_min"
     assert test_col.sum == "sum(example_column) AS example_column_sum"
+
+
+def test_column_copy(test_col):
+    cpy = test_col.copy()
+    assert cpy == test_col
+    assert id(cpy) != test_col
+    assert cpy.name == test_col
+    c = test_col.asc
+    assert c == test_col
+    assert id(c) != test_col
+    assert c.sort_direction == "ASC"
+    c = test_col.grouped
+    assert c == test_col
+    assert id(c) != test_col
