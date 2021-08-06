@@ -21,6 +21,9 @@ class Columns:
     def __bool__(self):
         return bool(self._columns)
 
+    def __len__(self):
+        return len(self._columns)
+
     def __iter__(self):
         return iter(self._columns.values())
 
