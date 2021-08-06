@@ -70,4 +70,4 @@ def test_table_select():
     a = t.Column("col_a", types.Text)
     s = t.select(a)
     assert s.db is everstone.db
-    assert len(s._rows) == 1
+    assert len(s._columns) == 1

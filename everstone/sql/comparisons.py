@@ -17,6 +17,9 @@ class Comparable(metaclass=abc.ABCMeta):
         else:
             return f"{value}"
 
+    def __hash__(self):
+        return hash(str(self))
+
     def __lt__(self, value: t.Any) -> str:
         """Evaluate if less than a value."""
         value = self._sql_value(value)

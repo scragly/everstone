@@ -77,12 +77,6 @@ class Column(comparisons.Comparable):
         self.table = table
         return self
 
-    def as_(self, alias: str) -> Column:
-        """Sets an alias name to represent this column and returns it's definition."""
-        c = self.copy()
-        c.alias = alias
-        return c
-
     def copy(self) -> Column:
         c = Column(self._name, self.type, *self.constraints, default=self._default)
         c.alias = self.alias
@@ -162,4 +156,10 @@ class Column(comparisons.Comparable):
     def desc(self) -> Column:
         c = self.copy()
         c._sort_direction = "DESC"
+        return c
+
+    def as_(self, alias: str) -> Column:
+        """Sets an alias name to represent this column and returns it's definition."""
+        c = self.copy()
+        c.alias = alias
         return c

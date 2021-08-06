@@ -57,6 +57,14 @@ class Table:
         self.columns: Columns = Columns(self)
         self.constraints: t.Set[Constraint] = set()
 
+        self.select = select.Select(self.db)
+
+    def __getitem__(self, item: str) -> column.Column:
+        return self.columns[item]
+
+    def __setitem__(self, key: str, value: column.Column):
+        self.columns[key] = value
+
     @property
     def full_name(self) -> str:
         """Return the fully qualified name of the current table."""
@@ -122,7 +130,3 @@ class Table:
         col = column.Column(name, type, *constraints).bind_table(self)
         self.columns[col.name] = col
         return col
-
-    def select(self, *columns: Column) -> select.Select:
-        """Begin a select query for this table."""
-        return select.Select(self.db).select(*columns)
