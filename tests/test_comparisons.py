@@ -36,3 +36,16 @@ def test_comparable_operators():
     assert (example.is_("something")) == "'example_text' IS 'something'"
     assert (example.is_not("something")) == "'example_text' IS NOT 'something'"
     assert (example.in_("something")) == "'example_text' IN 'something'"
+
+
+def test_condition():
+    c = comparisons.Condition("example")
+    assert str(c) == "example"
+    assert repr(c) == '<Condition "example">'
+    assert c == "example"
+    assert (c & "a") == "(example AND a)"
+    assert (c | "a") == "(example OR a)"
+    assert c.and_("b") == "(example AND b)"
+    assert c.or_("b") == "(example OR b)"
+    assert comparisons.Condition.and_(c, "b") == "(example AND b)"
+    assert comparisons.Condition.or_(c, "b") == "(example OR b)"

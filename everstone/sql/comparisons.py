@@ -1,5 +1,45 @@
+from __future__ import annotations
+
 import abc
 import typing as t
+
+
+class Condition:
+    def __init__(self, expression: t.Union[str, Condition]):
+        self.expression = expression
+
+    def __str__(self):
+        return str(self.expression)
+
+    def __repr__(self):
+        return f'<Condition "{self.expression}">'
+
+    def __eq__(self, other):
+        return str(self) == str(other)
+
+    def __and__(self, other):
+        return Condition(f"({self} AND {other})")
+
+    def __or__(self, other):
+        return Condition(f"({self} OR {other})")
+
+    @classmethod
+    def and_(cls, *conditions):  # pragma: no cover
+        joined = " AND ".join(str(c) for c in conditions)
+        return cls(f"({joined})")
+
+    @classmethod
+    def or_(cls, *conditions):  # pragma: no cover
+        joined = " OR ".join(str(c) for c in conditions)
+        return cls(f"({joined})")
+
+    def and_(self, *conditions):
+        joined = " AND ".join(str(c) for c in [self, *conditions])
+        return Condition(f"({joined})")
+
+    def or_(self, *conditions):
+        joined = " OR ".join(str(c) for c in [self, *conditions])
+        return Condition(f"({joined})")
 
 
 class Comparable(metaclass=abc.ABCMeta):
@@ -20,79 +60,79 @@ class Comparable(metaclass=abc.ABCMeta):
     def __hash__(self):
         return hash(str(self))
 
-    def __lt__(self, value: t.Any) -> str:
+    def __lt__(self, value: t.Any) -> Condition:
         """Evaluate if less than a value."""
         value = self._sql_value(value)
-        return f"{self} < {value}"
+        return Condition(f"{self} < {value}")
 
-    def __le__(self, value: t.Any) -> str:
+    def __le__(self, value: t.Any) -> Condition:
         """Evaluate if less than or equal to a value."""
         value = self._sql_value(value)
-        return f"{self} <= {value}"
+        return Condition(f"{self} <= {value}")
 
-    def __eq__(self, value: t.Any) -> str:
+    def __eq__(self, value: t.Any) -> Condition:
         """Evaluate if equal to a value."""
         value = self._sql_value(value)
-        return f"{self} = {value}"
+        return Condition(f"{self} = {value}")
 
-    def __ne__(self, value: t.Any) -> str:
+    def __ne__(self, value: t.Any) -> Condition:
         """Evaluate if not equal to a value."""
         value = self._sql_value(value)
-        return f"{self} <> {value}"
+        return Condition(f"{self} <> {value}")
 
-    def __gt__(self, value: t.Any) -> str:
+    def __gt__(self, value: t.Any) -> Condition:
         """Evaluate if greater than a value."""
         value = self._sql_value(value)
-        return f"{self} > {value}"
+        return Condition(f"{self} > {value}")
 
-    def __ge__(self, value: t.Any) -> str:
+    def __ge__(self, value: t.Any) -> Condition:
         """Evaluate if greater than or equal to a value."""
         value = self._sql_value(value)
-        return f"{self} >= {value}"
+        return Condition(f"{self} >= {value}")
 
-    def like(self, value: t.Any) -> str:
+    def like(self, value: t.Any) -> Condition:
         """Evaluate if like a value."""
         value = self._sql_value(value)
-        return f"{self} LIKE {value}"
+        return Condition(f"{self} LIKE {value}")
 
-    def not_like(self, value: t.Any) -> str:
+    def not_like(self, value: t.Any) -> Condition:
         """Evaluate if not like a value."""
         value = self._sql_value(value)
-        return f"{self} NOT LIKE {value}"
+        return Condition(f"{self} NOT LIKE {value}")
 
-    def ilike(self, value: t.Any) -> str:
+    def ilike(self, value: t.Any) -> Condition:
         """Evaluate if like a value, ignoring case."""
         value = self._sql_value(value)
-        return f"{self} ILIKE {value}"
+        return Condition(f"{self} ILIKE {value}")
 
-    def not_ilike(self, value: t.Any) -> str:
+    def not_ilike(self, value: t.Any) -> Condition:
         """Evaluate if not like a value, ignoring case."""
         value = self._sql_value(value)
-        return f"{self} NOT ILIKE {value}"
+        return Condition(f"{self} NOT ILIKE {value}")
 
-    def between(self, minvalue: t.Any, maxvalue: t.Any) -> str:
+    def between(self, minvalue: t.Any, maxvalue: t.Any) -> Condition:
         """Evaluate if between two values."""
         minvalue = self._sql_value(minvalue)
         maxvalue = self._sql_value(maxvalue)
-        return f"{self} BETWEEN {minvalue} AND {maxvalue}"
+        return Condition(f"{self} BETWEEN {minvalue} AND {maxvalue}")
 
-    def not_between(self, minvalue: t.Any, maxvalue: t.Any) -> str:
+    def not_between(self, minvalue: t.Any, maxvalue: t.Any) -> Condition:
         """Evaluate if not between two values."""
         minvalue = self._sql_value(minvalue)
         maxvalue = self._sql_value(maxvalue)
-        return f"{self} NOT BETWEEN {minvalue} AND {maxvalue}"
+        return Condition(f"{self} NOT BETWEEN {minvalue} AND {maxvalue}")
 
-    def is_(self, value: t.Any) -> str:
+    def is_(self, value: t.Any) -> Condition:
         """Evaluate if is a value."""
         value = self._sql_value(value)
-        return f"{self} IS {value}"
+        return Condition(f"{self} IS {value}")
 
-    def is_not(self, value: t.Any) -> str:
+    def is_not(self, value: t.Any) -> Condition:
         """Evaluate if is not a value."""
         value = self._sql_value(value)
-        return f"{self} IS NOT {value}"
+        return Condition(f"{self} IS NOT {value}")
 
-    def in_(self, value: t.Any) -> str:
+    def in_(self, value: t.Any) -> Condition:
         """Evaluate if in a value."""
         value = self._sql_value(value)
-        return f"{self} IN {value}"
+        return Condition(f"{self} IN {value}")

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import typing as t
 
+from . import where
 from .. import database
 
 if t.TYPE_CHECKING:
@@ -13,6 +14,7 @@ if t.TYPE_CHECKING:
 class Select:
     def __init__(self, db: database.Database = None):
         self.db = db or database.Database.get_default()
+        self.where = where.Where(self)
 
         # references
         self._columns: t.List[t.Union[Column, Aggregate]] = []
